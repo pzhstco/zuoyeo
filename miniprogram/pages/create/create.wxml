@@ -1,0 +1,107 @@
+<!--create.wxml-->
+<!-- 发起投票页面 -->
+
+<!-- 页面容器 -->
+<view class="page-container">
+  <!-- 表单区域 -->
+  <view class="form-container">
+    <!-- 投票标题 -->
+    <view class="form-item">
+      <text class="form-label">投票标题 <text class="required">*</text></text>
+      <input
+        class="form-input"
+        placeholder="请输入投票标题"
+        value="{{title}}"
+        bindinput="onTitleInput"
+        maxlength="50"
+      />
+    </view>
+
+    <!-- 投票描述 -->
+    <view class="form-item">
+      <text class="form-label">投票描述</text>
+      <textarea
+        class="form-textarea"
+        placeholder="请输入投票描述（可选）"
+        value="{{description}}"
+        bindinput="onDescriptionInput"
+        maxlength="200"
+      />
+    </view>
+
+    <!-- 投票选项 -->
+    <view class="form-item">
+      <text class="form-label">投票选项 <text class="required">*</text></text>
+
+      <!-- 选项列表 -->
+      <view class="options-list">
+        <view
+          wx:for="{{options}}"
+          wx:key="index"
+          class="option-item"
+        >
+          <view class="option-input-wrapper">
+            <text class="option-number">{{index + 1}}</text>
+            <input
+              class="form-input option-input"
+              placeholder="请输入选项{{index + 1}}"
+              value="{{item}}"
+              bindinput="onOptionInput"
+              data-index="{{index}}"
+              maxlength="30"
+            />
+          </view>
+          <!-- 删除按钮（至少保留2个选项） -->
+          <view
+            wx:if="{{options.length > 2}}"
+            class="option-delete"
+            bindtap="removeOption"
+            data-index="{{index}}"
+          >
+            <text class="delete-icon">×</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 添加选项按钮 -->
+      <view
+        wx:if="{{options.length < 10}}"
+        class="add-option-btn"
+        bindtap="addOption"
+      >
+        <text class="add-icon">+</text>
+        <text class="add-text">添加选项</text>
+      </view>
+
+      <text class="options-tip">（至少2个选项，最多10个）</text>
+    </view>
+
+    <!-- 截止时间 -->
+    <view class="form-item">
+      <text class="form-label">截止时间</text>
+      <view class="date-time-wrapper">
+        <picker mode="date" value="{{date}}" bindchange="onDateChange">
+          <view class="form-input date-input">
+            <text>{{date || '选择日期'}}</text>
+          </view>
+        </picker>
+        <picker mode="time" value="{{time}}" bindchange="onTimeChange">
+          <view class="form-input time-input">
+            <text>{{time || '选择时间'}}</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-area">
+    <button
+      class="submit-btn btn btn-primary"
+      bindtap="submitVote"
+      disabled="{{isSubmitting}}"
+    >
+      {{isSubmitting ? '提交中...' : '发起投票'}}
+    </button>
+  </view>
+</view>
