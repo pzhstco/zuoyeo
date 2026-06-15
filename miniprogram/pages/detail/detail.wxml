@@ -1,0 +1,74 @@
+<!--detail.wxml-->
+<view class="container" wx:if="{{!loading}}">
+  <!-- 投票标题 -->
+  <view class="vote-header">
+    <view class="status-tag {{voteData.status === 'active' ? 'active' : 'ended'}}">
+      {{voteData.status === 'active' ? '进行中' : '已结束'}}
+    </view>
+    <text class="vote-title">{{voteData.title}}</text>
+  </view>
+
+  <!-- 投票描述 -->
+  <view class="desc-box">
+    <text class="desc-text">{{voteData.description}}</text>
+  </view>
+
+  <!-- 投票信息 -->
+  <view class="info-row">
+    <view class="info-item">
+      <text class="info-icon">👤</text>
+      <text class="info-text">{{voteData.creator || '匿名用户'}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-icon">📅</text>
+      <text class="info-text">{{voteData.createTimeFormatted}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-icon">🗳️</text>
+      <text class="info-text">{{voteData.totalVotes}}人参与</text>
+    </view>
+  </view>
+
+  <!-- 投票选项 -->
+  <view class="options-box">
+    <text class="options-title">{{hasVoted || voteData.status !== 'active' ? '投票结果' : '请选择您的答案'}}</text>
+    
+    <view class="options-list">
+      <view 
+        wx:for="{{voteData.options}}" 
+        wx:key="index" 
+        class="option-item"
+        bindtap="doVote"
+        data-index="{{index}}"
+      >
+        <view class="option-letter">{{letters[index]}}</view>
+        <view class="option-content">
+          <text class="option-text">{{item}}</text>
+          <view class="option-stats" wx:if="hasVoted || voteData.status !== 'active'">
+            <text class="option-count">{{voteData.voteResults[index] || 0}}票</text>
+            <text class="option-percent">{{voteData.percentages[index]}}%</text>
+          </view>
+          <view class="vote-btn" wx:else>
+            <text>投票</text>
+          </view>
+        </view>
+        <!-- 进度条 -->
+        <view class="progress-bar" wx:if="hasVoted || voteData.status !== 'active'">
+          <view class="progress-fill {{myVoteIndex === index ? 'my-vote' : ''}}" style="width: {{voteData.percentages[index]}}%"></view>
+        </view>
+        <!-- 已投票标记 -->
+        <view class="voted-mark" wx:if="myVoteIndex === index">✓</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 已投票提示 -->
+  <view class="voted-tip" wx:if="hasVoted && voteData.status === 'active'">
+    <text>✓ 您已完成投票</text>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading" wx:else>
+  <text>加载中...</text>
+</view>
